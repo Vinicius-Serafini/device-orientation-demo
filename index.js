@@ -148,9 +148,6 @@ canvas.render();
 window.addEventListener('deviceorientationabsolute', (event) => {
   const { alpha, beta, gamma } = event;
 
-  let angle = -(alpha + beta * gamma / 90);
-  angle -= Math.floor(angle / 360) * 360; // Wrap to range [0,360]
-
-  canvas.yOrientation = angle >= 270 || angle <= 90 ? -1 : 1;
-  canvas.xOrientation = angle <= 360 && angle >= 180 ? 1 : -1;
+  canvas.yOrientation = gamma > 0 || gamma < 0 ? -1 : 1;
+  canvas.xOrientation = beta > 0 || beta < 0 ? -1 : 1;
 });
