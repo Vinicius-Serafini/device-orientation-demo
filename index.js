@@ -146,9 +146,9 @@ canvas.populateGrid();
 canvas.render();
 
 window.addEventListener('deviceorientationabsolute', (event) => {
-  const { alpha, beta, gamma } = event;
+  const { alpha, beta } = event;
 
 
-  canvas.yOrientation = alpha > 0 && alpha < 180 ? -1 : 1;
+  canvas.yOrientation = beta > 0 && beta < 180 ? -1 : 1;
   canvas.xOrientation = alpha > 0 && alpha < 180 ? -1 : 1;
 });
