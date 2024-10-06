@@ -146,9 +146,11 @@ canvas.populateGrid();
 canvas.render();
 
 window.addEventListener('deviceorientationabsolute', (event) => {
-  const { alpha, beta } = event;
+  const { alpha, beta, gamma } = event;
 
+  let compass = -(alpha + beta * gamma / 90);
+  compass -= Math.floor(compass / 360) * 360;
 
-  canvas.yOrientation = beta > 0 && beta < 180 ? -1 : 1;
-  canvas.xOrientation = alpha > 0 && alpha < 180 ? -1 : 1;
+  canvas.yOrientation = compass > 0 && compass < 180 ? -1 : 1;
+  canvas.xOrientation = compass > 180 && compass < 360 ? -1 : 1;
 });
