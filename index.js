@@ -145,8 +145,8 @@ const canvas = new Canvas(canvasEl);
 canvas.populateGrid();
 canvas.render();
 
-window.addEventListener('devicemotion', (event) => {
-  const { beta, gamma } = event.rotationRate
+window.addEventListener('deviceorientation', (event) => {
+  const { beta, gamma } = event;
 
   canvas.yOrientation = beta > 0 ? -1 : 1;
   canvas.xOrientation = gamma > 0 ? -1 : 1;
