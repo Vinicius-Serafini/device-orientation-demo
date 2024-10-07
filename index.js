@@ -145,12 +145,9 @@ const canvas = new Canvas(canvasEl);
 canvas.populateGrid();
 canvas.render();
 
-window.addEventListener('deviceorientationabsolute', (event) => {
-  const { alpha, beta, gamma } = event;
+window.addEventListener('devicemotion', (event) => {
+  const { beta, gamma } = event.rotationRate
 
-  let angle = -(alpha + beta * gamma / 90);
-  angle -= Math.floor(angle / 360) * 360; // Wrap to range [0,360]
-
-  canvas.yOrientation = angle >= 270 || angle <= 90 ? -1 : 1;
-  canvas.xOrientation = angle <= 360 && angle >= 180 ? 1 : -1;
+  canvas.yOrientation = beta > 0 ? -1 : 1;
+  canvas.xOrientation = gamma > 0 ? -1 : 1;
 });
