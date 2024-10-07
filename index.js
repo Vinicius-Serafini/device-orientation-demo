@@ -54,6 +54,7 @@ class Canvas {
         }
 
         const nextYNeighbor = this.yOrientation === 1 ? -1 : 1;
+        const isTheLastRow = this.yOrientation === -1 ? row === 0 : row === this.rows - 1;
         const nextXNeighbor = this.xOrientation === 1 ? 1 : -1;
         const isTheLastColumn = this.xOrientation === -1 ? column === 0 : column === this.columns - 1;
 
@@ -65,26 +66,27 @@ class Canvas {
         if (isTheLastColumn) {
           if (!isYOutOfBounds && !hasYNeighbor) {
             nextGrid[row + nextYNeighbor][column] = true;
-          } else {
-            nextGrid[row][column] = true;
+            continue;
           }
+
+          nextGrid[row][column] = true;
 
           continue;
         }
 
-        if (!hasXNeighbor && !hasYNeighbor && !isXOutOfBounds && !isYOutOfBounds) {
+        if (!hasXNeighbor && !hasYNeighbor) {
           nextGrid[row + nextYNeighbor][column + nextXNeighbor] = true;
 
           continue;
         }
 
-        if (!hasYNeighbor && !isYOutOfBounds) {
+        if (!hasYNeighbor) {
           nextGrid[row + nextYNeighbor][column] = true;
 
           continue;
         }
 
-        if (!hasXNeighbor && !isXOutOfBounds) {
+        if (!hasXNeighbor) {
           nextGrid[row][column + nextXNeighbor] = true;
 
           continue;
