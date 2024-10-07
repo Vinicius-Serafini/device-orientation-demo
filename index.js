@@ -145,7 +145,7 @@ const canvas = new Canvas(canvasEl);
 canvas.populateGrid();
 canvas.render();
 
-window.addEventListener('deviceorientation', (event) => {
+window.addEventListener('deviceorientationabsolute', (event) => {
   const { alpha, beta, gamma } = event;
 
   let angle = -(alpha + beta * gamma / 90);
