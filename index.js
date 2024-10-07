@@ -68,6 +68,8 @@ class Canvas {
           } else {
             nextGrid[row][column] = true;
           }
+
+          continue;
         }
 
         if (!hasXNeighbor && !hasYNeighbor && !isXOutOfBounds && !isYOutOfBounds) {
