@@ -54,36 +54,19 @@ class Canvas {
         }
 
         const nextYNeighbor = this.yOrientation === 1 ? -1 : 1;
-        const nextXNeighbor = this.xOrientation === 1 ? 1 : -1;
-        const isTheLastColumn = this.xOrientation === -1 ? column === 0 : column === this.columns - 1;
-
-        const isXOutOfBounds = column + nextXNeighbor < 0 || column + nextXNeighbor >= this.columns;
+        const isTheLastRow = this.yOrientation === -1 ? row === 0 : row === this.rows - 1;
         const isYOutOfBounds = row + nextYNeighbor < 0 || row + nextYNeighbor >= this.rows;
         const hasYNeighbor = !isYOutOfBounds && this.grid[row + nextYNeighbor][column];
-        const hasXNeighbor = !isXOutOfBounds && this.grid[row][column + nextXNeighbor];
 
-        if (isTheLastColumn) {
-          if (!isYOutOfBounds && !hasYNeighbor) {
-            nextGrid[row + nextYNeighbor][column] = true;
-          } else {
-            nextGrid[row][column] = true;
-          }
-        }
 
-        if (!hasXNeighbor && !hasYNeighbor && !isXOutOfBounds && !isYOutOfBounds) {
-          nextGrid[row + nextYNeighbor][column + nextXNeighbor] = true;
+        if (isTheLastRow) {
+          nextGrid[row][column] = true;
 
           continue;
         }
 
         if (!hasYNeighbor && !isYOutOfBounds) {
           nextGrid[row + nextYNeighbor][column] = true;
-
-          continue;
-        }
-
-        if (!hasXNeighbor && !isXOutOfBounds) {
-          nextGrid[row][column + nextXNeighbor] = true;
 
           continue;
         }
@@ -145,9 +128,11 @@ const canvas = new Canvas(canvasEl);
 canvas.populateGrid();
 canvas.render();
 
-window.addEventListener('deviceorientation', (event) => {
-  const { beta, gamma } = event;
+window.addEventListener('deviceorientationabsolute', (event) => {
+  const { alpha, beta, gamma } = event;
 
-  canvas.yOrientation = beta > 0 ? -1 : 1;
-  canvas.xOrientation = gamma > 0 ? -1 : 1;
+  let angle = -(alpha + beta * gamma / 90);
+  angle -= Math.floor(angle / 360) * 360; // Wrap to range [0,360]
+
+  canvas.yOrientation = angle >= 270 || angle <= 90 ? -1 : 1;
 });
