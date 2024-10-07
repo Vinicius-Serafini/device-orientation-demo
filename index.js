@@ -152,5 +152,5 @@ window.addEventListener('deviceorientationabsolute', (event) => {
   compass -= Math.floor(compass / 360) * 360;
 
   canvas.yOrientation = compass > 0 && compass < 180 ? -1 : 1;
-  canvas.xOrientation = compass > 180 && compass < 360 ? -1 : 1;
+  canvas.xOrientation = compass > 90 && compass < 270 ? -1 : 1;
 });
