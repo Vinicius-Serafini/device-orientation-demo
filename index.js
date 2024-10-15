@@ -138,12 +138,14 @@ window.addEventListener('deviceorientation', (event) => {
     canvas.xOrientation = 0;
 
     alert('No device orientation data available');
+
+    return;
   }
 
   const leftToRight = event.gamma; // gamma: left to right
   const frontToBack = event.beta;
 
-  const THRESHOLD = 5;
+  const THRESHOLD = 3;
 
   if (frontToBack > THRESHOLD) {
     canvas.yOrientation = 1;
