@@ -133,6 +133,13 @@ canvas.populateGrid();
 canvas.render();
 
 window.addEventListener('deviceorientation', (event) => {
+  if (event.gamma === null && event.beta == null) {
+    canvas.yOrientation = 1;
+    canvas.xOrientation = 0;
+
+    alert('No device orientation data available');
+  }
+
   const leftToRight = event.gamma; // gamma: left to right
   const frontToBack = event.beta;
 
