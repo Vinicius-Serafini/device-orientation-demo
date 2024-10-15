@@ -5,15 +5,15 @@ class Canvas {
   ctx;
   height = 0;
   width = 0;
-  rows = 16;
-  columns = 9;
+  rows = 32;
+  columns = 18;
   cellWidth = 0;
   cellHeight = 0;
 
   /** @type {(-1 | 1 | 0)} */
   xOrientation = 1;
   /** @type {(-1 | 1 | 0)} */
-  yOrientation = 1;
+  yOrientation = -1;
 
   /** @type {boolean[][]} */
   grid = [];
@@ -39,7 +39,11 @@ class Canvas {
   }
 
   populateGrid() {
-    this.grid[parseInt(this.rows / 2)][parseInt(this.columns / 2)] = true;
+    for (let row = 0; row < this.rows; row++) {
+      for (let column = 0; column < this.columns; column++) {
+        this.grid[row][column] = Math.random() > 0.8;
+      }
+    }
   }
 
   nextGen() {
@@ -53,44 +57,23 @@ class Canvas {
           continue;
         }
 
-        const nextYNeighbor = this.yOrientation === 1 ? -1 : 1;
-        const isTheLastRow = this.yOrientation === -1 ? row === 0 : row === this.rows - 1;
-        const nextXNeighbor = this.xOrientation === 1 ? 1 : -1;
-        const isTheLastColumn = this.xOrientation === -1 ? column === 0 : column === this.columns - 1;
+        const newYPosition = row + this.yOrientation;
+        const isNewYOutOfBounds = newYPosition < 0 || newYPosition > this.rows - 1;
+        let nextYPosition = !isNewYOutOfBounds ? newYPosition : row;
 
-        const isXOutOfBounds = column + nextXNeighbor < 0 || column + nextXNeighbor >= this.columns;
-        const isYOutOfBounds = row + nextYNeighbor < 0 || row + nextYNeighbor >= this.rows;
-        const hasYNeighbor = !isYOutOfBounds && this.grid[row + nextYNeighbor][column];
-        const hasXNeighbor = !isXOutOfBounds && this.grid[row][column + nextXNeighbor];
-
-        if (isTheLastColumn) {
-          if (!isYOutOfBounds && !hasYNeighbor) {
-            nextGrid[row + nextYNeighbor][column] = true;
-            continue;
-          }
-
-          nextGrid[row][column] = true;
-
-          continue;
+        if (this.grid[nextYPosition][column] || nextGrid[nextYPosition][column]) {
+          nextYPosition = row;
         }
 
-        if (!hasXNeighbor && !hasYNeighbor) {
-          nextGrid[row + nextYNeighbor][column + nextXNeighbor] = true;
+        const newXPosition = column + this.xOrientation;
+        const isNewXOutOfBounds = newXPosition < 0 || newXPosition > this.columns - 1;
+        let nextXPosition = !isNewXOutOfBounds ? newXPosition : column;
 
-          continue;
+        if (this.grid[nextYPosition][nextXPosition] || nextGrid[nextYPosition][nextXPosition]) {
+          nextXPosition = column;
         }
 
-        if (!hasYNeighbor) {
-          nextGrid[row + nextYNeighbor][column] = true;
-
-          continue;
-        }
-
-        if (!hasXNeighbor) {
-          nextGrid[row][column + nextXNeighbor] = true;
-
-          continue;
-        }
+        nextGrid[nextYPosition][nextXPosition] = true;
       }
     }
 
@@ -150,11 +133,24 @@ canvas.populateGrid();
 canvas.render();
 
 window.addEventListener('deviceorientation', (event) => {
-  const { alpha, beta, gamma } = event;
+  const leftToRight = event.gamma; // gamma: left to right
+  const frontToBack = event.beta;
 
-  let angle = -(alpha + beta * gamma / 90);
-  angle -= Math.floor(angle / 360) * 360; // Wrap to range [0,360]
+  const THRESHOLD = 5;
 
-  canvas.yOrientation = angle >= 270 || angle <= 90 ? -1 : 1;
-  canvas.xOrientation = angle < 180 ? -1 : 1;
+  if (frontToBack > THRESHOLD) {
+    canvas.yOrientation = 1;
+  } else if (frontToBack < -THRESHOLD) {
+    canvas.yOrientation = -1;
+  } else {
+    canvas.yOrientation = 0;
+  }
+
+  if (leftToRight > THRESHOLD) {
+    canvas.xOrientation = 1;
+  } else if (leftToRight < -THRESHOLD) {
+    canvas.xOrientation = -1;
+  } else {
+    canvas.xOrientation = 0;
+  }
 });
